@@ -34,20 +34,15 @@ class LinkedList{
         this.tail = null;
     }
 
+
     get(i) {
-        let j = 0;
-        let current = this.head;
-        while (i != j){
-            j++;
-            current = current.next;
-        }
-        return current;
+        return this.nodeAt(i).data;
     }
 
     indexOf(payload) {
         let i = 0;
         let current = this.head;
-        while (current !== null && current.data !== payload) {
+        while (current !== null && current !== payload) {
             i++;
             current = current.next;
         }
@@ -58,17 +53,133 @@ class LinkedList{
     }
 
     insertAfter(i, payload) {
-        payload.next = this.get(i).next;
-        payload.prev = this.get(i);
-        this.get(i).next = payload;
+        const insertAt = this.nodeAt(i);
+        payload.next = insertAt.next;
+        payload.prev = insertAt;
+        insertAt.next = payload;
         payload.next.prev = payload;
     }
 
     insertBefore(i, payload) {
-        payload.next = this.get(i);
-        payload.prev = this.get(i).prev;
-        this.get(i).prev.next = payload;
-        this.get(i).prev = payload;
+        const insertAt = this.nodeAt(i);
+        payload.next = insertAt;
+        payload.prev = insertAt.prev;
+        insertAt.prev.next = payload;
+        insertAt.prev = payload;
+    }
+
+    first() {
+        return this.head;
+    }
+
+    last() {
+        return this.tail;
+    }
+
+    remove(i) {
+        const toDelete = this.nodeAt(i);
+
+        if (toDelete == this.head){
+            this.removeFirst()
+            return null;
+        }
+
+        if (toDelete == this.tail) {
+            this.removeLast();
+            return null;
+        }
+        const prev = toDelete.prev;
+        const next = toDelete.next;
+        prev.next = next;
+        next.prev = prev;
+    }
+
+    removeFirst() {
+        this.head = this.head.next;
+        this.head.prev = null;
+    }
+
+    removeLast() {
+        this.tail = this.tail.prev;
+        this.tail.next = null;
+    }
+
+    insertAfterNode(payload, existingNode) {
+
+        if (existingNode === this.tail) {
+            this.add(payload);
+            return null;
+        }
+
+        payload.prev = existingNode;
+        payload.next = existingNode.next;
+        existingNode.next.prev = payload;
+        existingNode.next = payload;
+    }
+
+    insertBeforeNode(payload, existingNode) {
+
+        if (existingNode === this.head) {
+            this.addFirst(payload);
+            return null;
+        }
+
+        payload.prev = existingNode.prev;
+        payload.next = existingNode;
+        existingNode.prev.next = payload;
+        existingNode.prev = payload;
+    }
+
+    removeNode(node) {
+        const toDelete = this.indexOf(node);
+        this.remove(toDelete);
+    }
+
+    nodeAt(i) {
+        let j = 0;
+        let current = this.head;
+        while (i != j){
+            j++;
+            current = current.next;
+        }
+        return current;
+    }
+
+    swapNodes(nodeA, nodeB) {
+    const aPrev = nodeA.prev;
+    const aNext = nodeA.next;
+    const bPrev = nodeB.prev;
+    const bNext = nodeB.next;
+
+    if (aPrev !== null) {
+        aPrev.next = nodeB;
+    } else {
+        this.head = nodeB;
+    }
+    if (aNext !== null) {
+        aNext.prev = nodeB;
+    } else {
+        this.tail = nodeB;
+    }
+
+    if (bPrev !== null) {
+        bPrev.next = nodeA;
+    } else {
+        this.head = nodeA;
+    }
+    if (bNext !== null) {
+        bNext.prev = nodeA;
+    } else {
+        this.tail = nodeA;
+    }
+
+    const tempPrevA = nodeA.prev;
+    nodeA.prev = nodeB.prev;
+    nodeB.prev = tempPrevA;
+
+    const tempNextA = nodeA.next;
+    nodeA.next = nodeB.next;
+    nodeB.next = tempNextA;
     }
 }
 
