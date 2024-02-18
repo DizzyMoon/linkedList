@@ -39,7 +39,7 @@ class LinkedList{
         return this.nodeAt(i).data;
     }
 
-    indexOf(payload) {
+    indexOfNode(payload) {
         let i = 0;
         let current = this.head;
         while (current !== null && current !== payload) {
@@ -52,8 +52,25 @@ class LinkedList{
         return i;  
     }
 
+    indexOfData(payload) {
+        let i = 0;
+        let current = this.head;
+        while (current !== null && current.data !== payload) {
+            i++;
+            current = current.next;
+        }
+        if (current == null) {
+            return -1
+        }
+        return i;  
+    }
+
     insertAfter(i, payload) {
         const insertAt = this.nodeAt(i);
+        if (insertAt === this.tail) {
+            this.add(payload);
+            return null;
+        }
         payload.next = insertAt.next;
         payload.prev = insertAt;
         insertAt.next = payload;
@@ -62,6 +79,10 @@ class LinkedList{
 
     insertBefore(i, payload) {
         const insertAt = this.nodeAt(i);
+        if (insertAt === this.head) {
+            this.addFirst(payload);
+            return null;
+        }
         payload.next = insertAt;
         payload.prev = insertAt.prev;
         insertAt.prev.next = payload;
@@ -131,7 +152,7 @@ class LinkedList{
     }
 
     removeNode(node) {
-        const toDelete = this.indexOf(node);
+        const toDelete = this.indexOfNode(node);
         this.remove(toDelete);
     }
 
